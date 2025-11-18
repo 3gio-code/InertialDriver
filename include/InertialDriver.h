@@ -13,7 +13,8 @@ const int BUFFER_DIM = 5; // Impostato a 5 per facilitare i test, modificabile
  * Rappresenta la "Lettura" di un singolo sensore.
  * Contiene 6 valori double come specificato (Source: 7, 8).
  */
-struct Reading {
+struct Reading
+{
     double yaw_v;
     double yaw_a;
     double pitch_v;
@@ -27,21 +28,23 @@ struct Reading {
  * Composta da 17 letture organizzate in un array stile C (Source: 17).
  * Usiamo una struct wrapper per poter gestire l'array nei return e nel MyVector.
  */
-struct Measure {
+struct Measure
+{
     Reading readings[17]; // Array C-style obbligatorio di 17 elementi
 };
 
 // CLASSE INERTIAL DRIVER
 
-class InertialDriver {
+class InertialDriver
+{
 private:
     // Buffer gestito obbligatoriamente con la classe MyVector (Source: 18)
     MyVector<Measure> buffer;
 
     // Variabili per la gestione della logica a buffer circolare
-    int head;    // Indice di scrittura (dove inserire il prossimo elemento)
-    int count;   // Numero attuale di elementi validi nel buffer
-    
+    int head;  // Indice di scrittura (dove inserire il prossimo elemento)
+    int count; // Numero attuale di elementi validi nel buffer
+
     // Funzione helper per calcolare l'indice dell'elemento più vecchio (tail)
     int get_tail_index() const;
 
@@ -53,7 +56,7 @@ public:
      * Aggiunge una misura al buffer.
      * Sovrascrive la meno recente se il buffer è pieno (Source: 22).
      */
-    void push_back(const Measure& m);
+    void push_back(const Measure &m);
 
     /**
      * Restituisce la misura più vecchia e la rimuove dal buffer (Source: 23).
@@ -77,7 +80,7 @@ public:
 
     // Overloading operatore<< (dichiarato friend per accedere ai dati se necessario, o usa getter)
     // Stampa a schermo l'ultima misura salvata (Source: 26)
-    friend std::ostream& operator<<(std::ostream& os, InertialDriver& driver);
+    friend std::ostream &operator<<(std::ostream &os, InertialDriver &driver);
 };
 
 #endif // INERTIAL_DRIVER_H
