@@ -1,8 +1,11 @@
 #ifndef MyVector_HPP
 #define MyVector_HPP
-#include "MyVector.h"
 #include <iostream>
 #include <algorithm>
+
+#ifdef __INTELLISENSE__
+#include "MyVector.h"
+#endif
 
 // FUNZIONI PRIVATE:
 
