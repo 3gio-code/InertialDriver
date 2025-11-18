@@ -1,0 +1,58 @@
+# --- Build Directory ---
+# Ignora la cartella dove solitamente si compila
+build/
+build_debug/
+build_release/
+bin/
+lib/
+
+#json visual studio
+compile_commands.json
+
+
+# --- CMake Files (nel caso compilassi nella root per sbaglio) ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CPackConfig.cmake
+CPackSourceConfig.cmake
+*.cmake
+!CMakeLists.txt
+
+# --- Compilati e Oggetti ---
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.out
+*.app
+
+# --- Eseguibili specifici del tuo progetto ---
+# Aggiungi qui il nome del tuo eseguibile definito in add_executable
+Test
+Test.exe
+
+# --- IDE / Editor ---
+# VS Code (contiene configurazioni locali che non vanno condivise)
+.vscode/
+
+# IntelliJ / CLion
+.idea/
+cmake-build-*/
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+
+# --- Sistema Operativo (macOS) ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
