@@ -48,12 +48,12 @@ int main()
     }
     catch (InertialDriver::BufferEmptyException)
     {
-        std::cerr << "Eccezione, buffer vuoto!" < std::endl;
+        std::cerr << "Eccezione, buffer vuoto!" << std::endl;
     }
 
     catch (InertialDriver::SensorIndexOutOfBoundException)
     {
-        std::cerr << "Eccezione. indici errati!" < std::endl;
+        std::cerr << "Eccezione. indici errati!" << std::endl;
     }
 
     std::cout << "\n4. Test pop_front (FIFO)" << std::endl;
@@ -73,7 +73,7 @@ int main()
 
     catch (InertialDriver::SensorIndexOutOfBoundException)
     {
-        std::cerr << "Eccezione, indici errati!" < std::endl;
+        std::cerr << "Eccezione, indici errati!" << std::endl;
     }
 
     std::cout << "\n5. Test clear_buffer" << std::endl;
@@ -92,7 +92,7 @@ int main()
 
     catch (InertialDriver::SensorIndexOutOfBoundException)
     {
-        std::cerr << "Eccezione, indici errati!" < std::endl;
+        std::cerr << "Eccezione, indici errati!" << std::endl;
     }
 
     std::cout << "***** TEST TERMINATO *****" << std::endl;
