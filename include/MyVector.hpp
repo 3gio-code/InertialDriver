@@ -17,23 +17,23 @@ void MyVector<T>::index_check(int i)
 		throw IndexOutOfBoundException();
 }
 
-// Funzione che controlla se il bueffer è pieno, se si chiama resize
+// Funzione che controlla se il buffer è pieno, se si chiama resize
 template <typename T>
-void MyVector<T>::check_bueffer()
+void MyVector<T>::check_buffer()
 {
-	if (bueffer_sz == sz)
+	if (buffer_size == sz)
 		resize();
 }
 
-// Funzione che ingrandisce il bueffer
+// Funzione che ingrandisce il buffer
 template <typename T>
 void MyVector<T>::resize()
 {
-	bueffer_sz *= kDefaultResizeFactor; // bueffer_sz = bueffer_sz*2;
-	T *temp = elem;						// creo un puntatore temporaneo alle celle di memoria di elem
-	elem = new T[bueffer_sz];			// ora faccio puntare elem a bueffer_sz nuove celle di memoria
-	std::copy(temp, temp + sz, elem);	// effettuo copia dei vecchi elementi in elem (ingrandito)
-	delete[] temp;						// cancello il "vecchio elem" (le vecchie celle di memoria assegnate a elem)
+	buffer_size *= kDefaultResizeFactor; // buffer_size = buffer_size*2;
+	T *temp = elem;						 // creo un puntatore temporaneo alle celle di memoria di elem
+	elem = new T[buffer_size];			 // ora faccio puntare elem a buffer_size nuove celle di memoria
+	std::copy(temp, temp + sz, elem);	 // effettuo copia dei vecchi elementi in elem (ingrandito)
+	delete[] temp;						 // cancello il "vecchio elem" (le vecchie celle di memoria assegnate a elem)
 	// invalido temp
 	temp = nullptr;
 }
@@ -46,7 +46,7 @@ MyVector<T>::~MyVector()
 {
 	delete[] elem;
 	// delete sz; IMPLICITO
-	// delete bueffer_sz; IMPLICITO
+	// delete buffer_size; IMPLICITO
 	// se aggiungo la seguente riga vedo che alla fine del programma la funzione distruttore viene chiamata automaticamente
 	// std::cout<<"deleted"<< std::endl;
 }
@@ -63,10 +63,10 @@ MyVector<T>::MyVector(int s)
 	if (s < 0)
 		throw NegativeSizeException();
 	sz = s;
-	// il MyVector ha una bueffer_size minima di 10
-	if (s < kDefaultBuefferSize)
-		s = kDefaultBuefferSize;
-	bueffer_sz = s;
+	// il MyVector ha una buffer_size minima di 10
+	if (s < kDefaultbufferSize)
+		s = kDefaultbufferSize;
+	buffer_size = s;
 	elem = new T[s];
 }
 
@@ -76,29 +76,29 @@ template <typename T>
 MyVector<T>::MyVector(std::initializer_list<T> lst)
 {
 	sz = (int)lst.size();
-	// il MyVector ha una bueffer_size minima di 10
+	// il MyVector ha una buffer_size minima di 10
 	int s = sz;
-	if (s < kDefaultBuefferSize)
-		s = kDefaultBuefferSize;
-	bueffer_sz = s;
+	if (s < kDefaultbufferSize)
+		s = kDefaultbufferSize;
+	buffer_size = s;
 	elem = new T[s];
 	std::copy(lst.begin(), lst.end(), elem); // effettuo copia degli elementi di lst in elem
 }
 
 // Costruttore di COPIA
 template <typename T>
-MyVector<T>::MyVector(const MyVector<T> &arg) : sz{arg.sz}, bueffer_sz{arg.bueffer_sz}, elem{new T[arg.bueffer_sz]}
+MyVector<T>::MyVector(const MyVector<T> &arg) : sz{arg.sz}, buffer_size{arg.buffer_size}, elem{new T[arg.buffer_size]}
 { // accesso diretto ai membri privati di arg (possibile perchè oggetto di classe MyVector)
 	std::copy(arg.elem, arg.elem + sz, elem);
 }
 
 // Costruttore di MOVE (assegna ed invalida)
 template <typename T>
-MyVector<T>::MyVector(MyVector &&arg) : sz{arg.sz}, bueffer_sz{arg.bueffer_sz}, elem{arg.elem}
-{ // copia size, bueffer_size e puntatore
+MyVector<T>::MyVector(MyVector &&arg) : sz{arg.sz}, buffer_size{arg.buffer_size}, elem{arg.elem}
+{ // copia size, buffer_size e puntatore
 	// invalido arg
 	arg.sz = 0;
-	arg.bueffer_sz = 0;
+	arg.buffer_size = 0;
 	arg.elem = nullptr; // invalido puntatore di arg così che in fase di distruzione non venga eliminato il puntatorecon gli elementi "passati"
 }
 
@@ -108,12 +108,12 @@ MyVector<T>::MyVector(MyVector &&arg) : sz{arg.sz}, bueffer_sz{arg.bueffer_sz}, 
 template <typename T>
 MyVector<T> &MyVector<T>::operator=(const MyVector<T> &arg)
 {
-	T *p = new T[arg.bueffer_sz];			   // alloco arg.bueffer_sz nuove celle
+	T *p = new T[arg.buffer_size];			   // alloco arg.buffer_size nuove celle
 	std::copy(arg.elem, arg.elem + arg.sz, p); // copio il contenuto di arg in arg.sz delle nuove celle
 	delete[] elem;							   // cancello i vecchi dati di elem
 	elem = p;								   // faccio puntare il vettore al nuovo spazio riempito
 	sz = arg.sz;							   // il MyVector ora ha la sz del nuovo spazio riempito
-	bueffer_sz = arg.bueffer_sz;			   // il MyVector ora ha la bueffer_sz del nuovo spazio riempito
+	buffer_size = arg.buffer_size;			   // il MyVector ora ha la buffer_size del nuovo spazio riempito
 
 	return *this; // return self-reference
 }
@@ -122,14 +122,14 @@ MyVector<T> &MyVector<T>::operator=(const MyVector<T> &arg)
 template <typename T>
 MyVector<T> &MyVector<T>::operator=(MyVector<T> &&arg)
 {
-	delete[] elem;				 // cancello i vecchi elementi a cui puntava il mio vettore
-	elem = arg.elem;			 // lo faccio puntare ai nuovi elementi, quelli di arg
-	sz = arg.sz;				 // aggiorno anche la sua sz
-	bueffer_sz = arg.bueffer_sz; // aggiorno anche la sua bueffer_sz
+	delete[] elem;				   // cancello i vecchi elementi a cui puntava il mio vettore
+	elem = arg.elem;			   // lo faccio puntare ai nuovi elementi, quelli di arg
+	sz = arg.sz;				   // aggiorno anche la sua sz
+	buffer_size = arg.buffer_size; // aggiorno anche la sua buffer_size
 	// invalido arg
 	arg.elem = nullptr;
 	arg.sz = 0;
-	arg.bueffer_sz = 0;
+	arg.buffer_size = 0;
 	return *this; // return self-reference
 }
 
@@ -159,9 +159,9 @@ int MyVector<T>::size() const
 }
 
 template <typename T>
-int MyVector<T>::bueffer_size() const
+int MyVector<T>::buffer_size() const
 {
-	return bueffer_sz;
+	return buffer_size;
 }
 
 template <typename T>
@@ -192,7 +192,7 @@ T MyVector<T>::pop_back()
 template <typename T>
 void MyVector<T>::push_back(T el)
 {
-	check_bueffer();
+	check_buffer();
 	elem[sz++] = el;
 }
 
@@ -204,13 +204,13 @@ T &MyVector<T>::at(int index)
 	return elem[index];
 }
 
-// Funzione che fa si che bueffer_sz sia almeno grande quanto n
+// Funzione che fa si che buffer_size sia almeno grande quanto n
 template <typename T>
 void MyVector<T>::reserve(int n)
 {
-	for (int i = 0; (bueffer_sz - sz) < n; i++) // faccio tanti resize, quanti sono sufficienti a rendere falsa (bueffer_sz-sz)<n
-		resize();								// non mi interessa se ad ogni resize raddoppio la bueffer_sz e rischio di avere "più spazio disponibile"
-												// poichè non è richiesto che lo spazio disponibile sia esattamente n, ma basta che sia >n
+	for (int i = 0; (buffer_size - sz) < n; i++) // faccio tanti resize, quanti sono sufficienti a rendere falsa (buffer_size-sz)<n
+		resize();								 // non mi interessa se ad ogni resize raddoppio la buffer_size e rischio di avere "più spazio disponibile"
+												 // poichè non è richiesto che lo spazio disponibile sia esattamente n, ma basta che sia >n
 }
 // OVERLOADING OPERATORI
 

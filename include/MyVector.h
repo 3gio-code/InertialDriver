@@ -9,20 +9,20 @@ class MyVector
 
 private:
     // Var privata che contiene la size totale di celle di memoria inizializzate del MyVector
-    int bueffer_sz;
+    int buffer_size;
     // Var privata che contiene la size utilizzata del MyVector
     int sz;
     // Var privata che punta al primo degli elementi del MyVector (in memoria)
     T *elem;
     // Funzione che controlla se l'indice sta nel range di lunghezza del MyVector, termina correttamente se è così, lancia IndexOutOfBoundException altrimenti
     void index_check(int i);
-    // Funzione che controlla se il bueffer è pieno, se si chiama resize
-    void check_bueffer();
-    // Funzione che ingrandisce il bueffer
+    // Funzione che controlla se il buffer è pieno, se si chiama resize
+    void check_buffer();
+    // Funzione che ingrandisce il buffer
     void resize();
 
     // COSTANTI:
-    static constexpr int kDefaultBuefferSize = 10;
+    static constexpr int kDefaultbufferSize = 10;
     static constexpr int kDefaultResizeFactor = 2;
     static constexpr int kDefaultSize = 0;
 
@@ -78,8 +78,8 @@ public:
     // Funzione che returna la size del MyVector
     int size() const;
 
-    // Funzione che returna la bueffer_size del MyVector
-    int bueffer_size() const;
+    // Funzione che returna la buffer_size del MyVector
+    int buffer_size() const;
 
     // Funzione che setta un elemento del MyVector
     void set(T d, int index);
@@ -98,7 +98,7 @@ public:
     // Funzione che returna una reference all'elemento in posizione index, lancia eccezioni se indice non valido
     T &at(int index);
 
-    // Funzione che fa si che bueffer_sz sia almeno grande quanto n
+    // Funzione che fa si che buffer_size sia almeno grande quanto n
     void reserve(int n);
 };
 
