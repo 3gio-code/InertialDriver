@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/InertialDriver.h"
+#include "InertialDriver.h"
 
 // Funzione helper per creare una misura fittizia
 Measure create_dummy_measure(double seed)
@@ -46,9 +46,14 @@ int main()
         Reading r = driver.get_reading(0);
         std::cout << "Sensore 0 ultima misura (Atteso yaw_v ~ 7.0): " << r.yaw_v << std::endl;
     }
-    catch (const std::exception &e)
+    catch (InertialDriver::BufferEmptyException)
     {
-        std::cerr << "Errore: " << e.what() << std::endl;
+        std::cerr << "Eccezione, buffer vuoto!" < std::endl;
+    }
+
+    catch (InertialDriver::SensorIndexOutOfBoundException)
+    {
+        std::cerr << "Eccezione. indici errati!" < std::endl;
     }
 
     std::cout << "\n4. Test pop_front (FIFO)" << std::endl;
@@ -61,9 +66,14 @@ int main()
 
         std::cout << "Dimensione dopo pop (dovrebbe essere " << BUFFER_DIM - 1 << "): " << driver.get_current_size() << std::endl;
     }
-    catch (const std::exception &e)
+    catch (InertialDriver::BufferEmptyException)
     {
-        std::cerr << "Errore: " << e.what() << std::endl;
+        std::cerr << "Eccezione, buffer vuoto!" << std::endl;
+    }
+
+    catch (InertialDriver::SensorIndexOutOfBoundException)
+    {
+        std::cerr << "Eccezione, indici errati!" < std::endl;
     }
 
     std::cout << "\n5. Test clear_buffer" << std::endl;
@@ -75,11 +85,16 @@ int main()
     {
         driver.pop_front();
     }
-    catch (const std::exception &e)
+    catch (InertialDriver::BufferEmptyException)
     {
-        std::cout << "Eccezione catturata correttamente su pop vuoto: " << e.what() << std::endl;
+        std::cout << "Eccezione, buffer vuoto!" << std::endl;
     }
 
-    std::cout << "\n--- FINE TEST ---" << std::endl;
+    catch (InertialDriver::SensorIndexOutOfBoundException)
+    {
+        std::cerr << "Eccezione, indici errati!" < std::endl;
+    }
+
+    std::cout << "***** TEST TERMINATO *****" << std::endl;
     return 0;
 }

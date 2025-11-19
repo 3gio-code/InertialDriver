@@ -4,14 +4,16 @@
 #include "MyVector.h"
 #include <iostream>
 
-// Costante per la dimensione del buffer (Source: 19)
-const int BUFFER_DIM = 5; // Impostato a 5 per facilitare i test, modificabile
+// Costante per la dimensione del buffer
+const int BUFFER_DIM = 5; // Impostato a 5 per facilitare i test  (scelta arbitraria)
+// Costante per il numero dei sensori
+const int N_READINGS = 17; // Impostata a 17
 
 // DEFINIZIONE STRUTTURE DATI
 
 /**
  * Rappresenta la "Lettura" di un singolo sensore.
- * Contiene 6 valori double come specificato (Source: 7, 8).
+ * Contiene 6 valori double.
  */
 struct Reading
 {
@@ -25,20 +27,57 @@ struct Reading
 
 /**
  * Rappresenta la "Misura" completa del sistema.
- * Composta da 17 letture organizzate in un array stile C (Source: 17).
- * Usiamo una struct wrapper per poter gestire l'array nei return e nel MyVector.
+ * Composta da 17 letture organizzate in un array stile C.
  */
 struct Measure
 {
-    Reading readings[17]; // Array C-style obbligatorio di 17 elementi
+    Reading readings[N_READINGS]; // Array C-style obbligatorio di 17 elementi
 };
 
 // CLASSE INERTIAL DRIVER
 
 class InertialDriver
 {
+
+public:
+    // le due classi che mi vanno a cìgestire le eccezioni
+    class BufferEmptyException
+    {
+    }; // quando il buffer è vuoto
+    class SensorIndexOutOfBoundException
+    {
+    }; // errore nei valori degli indici
+    // Costruttore
+    InertialDriver();
+
+    /**
+     * Aggiunge una misura al buffer.
+     * Sovrascrive la meno recente se il buffer è pieno
+     */
+    void push_back(const Measure &m);
+
+    /**
+     * Restituisce la misura più vecchia e la rimuove dal buffer
+     * Lancia eccezione se il buffer è vuoto.
+     */
+    Measure pop_front();
+
+    /**
+     * Elimina tutte le misure salvate senza restituirle
+     */
+    void clear_buffer();
+
+    /**
+     * Ritorna la lettura corrispondente all'indice (0-16) della misura PIÙ RECENTE.
+     * Non cancella dal buffer
+     */
+    Reading get_reading(int index);
+
+    // Getter per debug/utility (opzionale ma utile per main)
+    int get_current_size() const;
+
 private:
-    // Buffer gestito obbligatoriamente con la classe MyVector (Source: 18)
+    // Buffer gestito obbligatoriamente con la classe MyVector
     MyVector<Measure> buffer;
 
     // Variabili per la gestione della logica a buffer circolare
@@ -47,40 +86,10 @@ private:
 
     // Funzione helper per calcolare l'indice dell'elemento più vecchio (tail)
     int get_tail_index() const;
-
-public:
-    // Costruttore
-    InertialDriver();
-
-    /**
-     * Aggiunge una misura al buffer.
-     * Sovrascrive la meno recente se il buffer è pieno (Source: 22).
-     */
-    void push_back(const Measure &m);
-
-    /**
-     * Restituisce la misura più vecchia e la rimuove dal buffer (Source: 23).
-     * Lancia eccezione se il buffer è vuoto.
-     */
-    Measure pop_front();
-
-    /**
-     * Elimina tutte le misure salvate senza restituirle (Source: 24).
-     */
-    void clear_buffer();
-
-    /**
-     * Ritorna la lettura corrispondente all'indice (0-16) della misura PIÙ RECENTE.
-     * Non cancella dal buffer (Source: 25).
-     */
-    Reading get_reading(int index);
-
-    // Getter per debug/utility (opzionale ma utile per main)
-    int get_current_size() const;
-
-    // Overloading operatore<< (dichiarato friend per accedere ai dati se necessario, o usa getter)
-    // Stampa a schermo l'ultima misura salvata (Source: 26)
-    friend std::ostream &operator<<(std::ostream &os, InertialDriver &driver);
 };
+
+// Overloading operatore<< (dichiarato friend per accedere ai dati se necessario, o usa getter)
+// Stampa a schermo l'ultima misura salvata
+std::ostream &operator<<(std::ostream &os, InertialDriver &driver);
 
 #endif // INERTIAL_DRIVER_H

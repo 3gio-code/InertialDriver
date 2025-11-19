@@ -1,5 +1,5 @@
 #include "InertialDriver.h"
-#include <stdexcept> // Per std::out_of_range
+#include <iostream>
 
 // COSTRUTTORE
 InertialDriver::InertialDriver() : head(0), count(0)
@@ -19,7 +19,6 @@ int InertialDriver::get_tail_index() const
 
 // IMPLEMENTAZIONE FUNZIONI PUBBLICHE
 
-// Source: 22
 void InertialDriver::push_back(const Measure &m)
 {
     // Caso 1: Il buffer fisico del MyVector non è ancora pieno (fase di riempimento iniziale)
@@ -44,14 +43,13 @@ void InertialDriver::push_back(const Measure &m)
     }
 }
 
-// Source: 23
 Measure InertialDriver::pop_front()
 {
     if (count == 0)
     {
         // Gestione errore buffer vuoto.
         // Nota: Potresti lanciare un'eccezione o ritornare una misura vuota.
-        throw std::runtime_error("Buffer vuoto: impossibile eseguire pop_front");
+        throw BufferEmptyException();
     }
 
     int tail = get_tail_index();
@@ -64,7 +62,6 @@ Measure InertialDriver::pop_front()
     return val;
 }
 
-// Source: 24
 void InertialDriver::clear_buffer()
 {
     // Reset logico. Non serve deallocare il MyVector (lo farà il distruttore),
@@ -80,16 +77,15 @@ void InertialDriver::clear_buffer()
     }
 }
 
-// Source: 25
 Reading InertialDriver::get_reading(int index)
 {
-    if (index < 0 || index > 16)
+    if (index < 0 || index >= N_READINGS)
     {
-        throw std::out_of_range("Indice sensore non valido (deve essere 0-16)");
+        throw SensorIndexOutOfBoundException();
     }
     if (count == 0)
     {
-        throw std::runtime_error("Buffer vuoto: nessuna lettura disponibile");
+        throw BufferEmptyException();
     }
 
     // "ritorna la corrispondente lettura della misura più recente"
@@ -112,27 +108,37 @@ int InertialDriver::get_current_size() const
     return count;
 }
 
-// Source: 26 - Overloading operator<<
+// Overloading operator<<
 std::ostream &operator<<(std::ostream &os, InertialDriver &driver)
 {
-    if (driver.count == 0)
+    // 1. Usiamo il metodo pubblico per controllare se ci sono dati
+    if (driver.get_current_size() == 0)
     {
         os << "Nessuna misura nel buffer.";
         return os;
     }
 
-    // Stampa l'ultima misura salvata (la più recente)
-    // Riutilizziamo la logica usata in get_reading
-    int newest_index = (driver.head - 1 + BUFFER_DIM) % BUFFER_DIM;
-    Measure m = driver.buffer.get(newest_index);
+    os << "=== ULTIMA MISURA SALVATA ===\n";
 
-    os << "=== ULTIMA MISURA (Indice interno: " << newest_index << ") ===\n";
-    for (int i = 0; i < 17; ++i)
+    // 2. Cicliamo sui 17 sensori usando il metodo pubblico get_reading()
+    // Nota: get_reading(i) restituisce la lettura della misura PIÙ RECENTE
+    for (int i = 0; i < N_READINGS; ++i)
     {
-        os << "Sensore " << i << ": "
-           << "Y(v:" << m.readings[i].yaw_v << ", a:" << m.readings[i].yaw_a << ") "
-           << "P(v:" << m.readings[i].pitch_v << ", a:" << m.readings[i].pitch_a << ") "
-           << "R(v:" << m.readings[i].roll_v << ", a:" << m.readings[i].roll_a << ")\n";
+        try
+        {
+            Reading r = driver.get_reading(i);
+
+            os << "Sensore " << i << ": "
+               << "Y(" << r.yaw_v << ", " << r.yaw_a << ") "
+               << "P(" << r.pitch_v << ", " << r.pitch_a << ") "
+               << "R(" << r.roll_v << ", " << r.roll_a << ")\n";
+        }
+        catch (InertialDriver::SensorIndexOutOfBoundException())
+        {
+            // Se get_reading lancia eccezioni (es. buffer vuoto improvviso), gestiamo qui
+            os << "Sensore " << i << ": Errore lettura\n";
+        }
     }
+
     return os;
 }
