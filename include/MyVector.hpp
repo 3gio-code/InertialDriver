@@ -159,7 +159,7 @@ int MyVector<T>::size() const
 }
 
 template <typename T>
-int MyVector<T>::buffer_size() const
+int MyVector<T>::get_buffer_size() const
 {
 	return buffer_size;
 }

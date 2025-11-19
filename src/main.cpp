@@ -29,7 +29,7 @@ int main()
     for (int i = 1; i <= BUFFER_DIM + 2; ++i)
     {
         std::cout << "Pushing misura " << i << "..." << std::endl;
-        Measure m = create_dummy_measure((double)i);
+        Measure m = create_dummy_measure(static_cast<double>(i));
         driver.push_back(m);
     }
 

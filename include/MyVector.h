@@ -79,7 +79,7 @@ public:
     int size() const;
 
     // Funzione che returna la buffer_size del MyVector
-    int buffer_size() const;
+    int get_buffer_size() const;
 
     // Funzione che setta un elemento del MyVector
     void set(T d, int index);

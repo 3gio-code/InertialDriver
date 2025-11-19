@@ -5,9 +5,9 @@
 #include <iostream>
 
 // Costante per la dimensione del buffer
-const int BUFFER_DIM = 5; // Impostato a 5 per facilitare i test  (scelta arbitraria)
+constexpr int BUFFER_DIM = 5; // Impostato a 5 per facilitare i test  (scelta arbitraria)
 // Costante per il numero dei sensori
-const int N_READINGS = 17; // Impostata a 17
+constexpr int N_READINGS = 17; // Impostata a 17
 
 // DEFINIZIONE STRUTTURE DATI
 
@@ -78,7 +78,7 @@ public:
 
 private:
     // Buffer gestito obbligatoriamente con la classe MyVector
-    MyVector<Measure> buffer;
+    MyVector<Measure> buffer{BUFFER_DIM};
 
     // Variabili per la gestione della logica a buffer circolare
     int head;  // Indice di scrittura (dove inserire il prossimo elemento)
