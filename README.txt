@@ -5,7 +5,7 @@ MEMBRI DEL GRUPPO:
 
 - Francesco Birtele
 - Giovanni Faggin
-- Leonardo Dall Mura
+- Leonardo Dalla Mura
 
 ---
 
