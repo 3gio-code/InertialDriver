@@ -2,16 +2,12 @@
 #define MyVector_HPP
 #include <iostream>
 
-#ifdef __INTELLISENSE__
-#include "MyVector.h"
-#endif
-
-// Funzione ausiliare per controllare se l'indice sta nel range 
+// Funzione ausiliare per controllare se l'indice sta nel range
 template <typename T>
 void MyVector<T>::index_check(int i)
 {
 	if (i < 0 || i > sz)
-		throw IndexOutOfBoundException(); //gestione delle eccezioni con le classi private in MyVector.h
+		throw IndexOutOfBoundException(); // gestione delle eccezioni con le classi private in MyVector.h
 }
 
 // Funzione ausiliare per controllare il buffer quando è pieno
@@ -26,16 +22,16 @@ void MyVector<T>::check_buffer()
 template <typename T>
 void MyVector<T>::resize()
 {
-	buffer_size *= defaultResizeFactor; 
-	T *temp = elem;						 
-	elem = new T[buffer_size];			 
-	std::copy(temp, temp + sz, elem);	 
-	delete[] temp;						 
+	buffer_size *= defaultResizeFactor;
+	T *temp = elem;
+	elem = new T[buffer_size];
+	std::copy(temp, temp + sz, elem);
+	delete[] temp;
 	// invalido temp
 	temp = nullptr;
 }
 
-//PUBLIC:
+// PUBLIC:
 
 // DISTRUTTORE:
 template <typename T>
@@ -49,7 +45,7 @@ MyVector<T>::~MyVector()
 template <typename T>
 MyVector<T>::MyVector() : sz{defaultSize}, elem{nullptr} {}
 
-// Costruttore che accetta un int 
+// Costruttore che accetta un int
 template <typename T>
 MyVector<T>::MyVector(int s)
 {
@@ -73,35 +69,35 @@ MyVector<T>::MyVector(std::initializer_list<T> lst)
 		s = defaultbufferSize;
 	buffer_size = s;
 	elem = new T[s];
-	std::copy(lst.begin(), lst.end(), elem); 
+	std::copy(lst.begin(), lst.end(), elem);
 }
 
 // Costruttore di copia
 template <typename T>
 MyVector<T>::MyVector(const MyVector<T> &arg) : sz{arg.sz}, buffer_size{arg.buffer_size}, elem{new T[arg.buffer_size]}
-{ 
+{
 	std::copy(arg.elem, arg.elem + sz, elem);
 }
 
 // Costruttore che assegna ed invalida
 template <typename T>
 MyVector<T>::MyVector(MyVector &&arg) : sz{arg.sz}, buffer_size{arg.buffer_size}, elem{arg.elem}
-{ 
+{
 	arg.sz = 0;
 	arg.buffer_size = 0;
-	arg.elem = nullptr; 
+	arg.elem = nullptr;
 }
 // OPERATORI:
 
 // Operator[]
 template <typename T>
 T &MyVector<T>::operator[](int n)
-{ 
+{
 	index_check(n);
 	return elem[n];
 }
 
-// Overlaoding operator[] 
+// Overlaoding operator[]
 template <typename T>
 T MyVector<T>::operator[](int n) const
 { // accesso solo in lettura (xk ho usato CONST)
@@ -113,25 +109,25 @@ T MyVector<T>::operator[](int n) const
 template <typename T>
 MyVector<T> &MyVector<T>::operator=(const MyVector<T> &arg)
 {
-	T *p = new T[arg.buffer_size];			   
-	std::copy(arg.elem, arg.elem + arg.sz, p); 
-	delete[] elem;							   
-	elem = p;								   
-	sz = arg.sz;							   
-	buffer_size = arg.buffer_size;			   
+	T *p = new T[arg.buffer_size];
+	std::copy(arg.elem, arg.elem + arg.sz, p);
+	delete[] elem;
+	elem = p;
+	sz = arg.sz;
+	buffer_size = arg.buffer_size;
 
-	return *this; 
+	return *this;
 }
 
 // Overloading operator =
 template <typename T>
 MyVector<T> &MyVector<T>::operator=(MyVector<T> &&arg)
 {
-	delete[] elem;				   
-	elem = arg.elem;			   
-	sz = arg.sz;				  
-	buffer_size = arg.buffer_size; 
-	arg.elem = nullptr;  
+	delete[] elem;
+	elem = arg.elem;
+	sz = arg.sz;
+	buffer_size = arg.buffer_size;
+	arg.elem = nullptr;
 	arg.sz = 0;
 	arg.buffer_size = 0;
 	return *this; // !! return self reference
@@ -167,12 +163,12 @@ void MyVector<T>::set(T x, int index)
 
 // FUNZIONI:
 
-// Funzione che rimuove l'ultimo elemento e lo returna 
+// Funzione che rimuove l'ultimo elemento e lo returna
 template <typename T>
 T MyVector<T>::pop_back()
-{						   
-	T temp = elem[sz - 1]; 
-	--sz;				   
+{
+	T temp = elem[sz - 1];
+	--sz;
 	return temp;
 }
 
@@ -196,12 +192,11 @@ T &MyVector<T>::at(int index)
 template <typename T>
 void MyVector<T>::reserve(int n)
 {
-	for (int i = 0; (buffer_size - sz) < n; i++) 
-		resize();								 
-												 
+	for (int i = 0; (buffer_size - sz) < n; i++)
+		resize();
 }
 
-// operatore<< 
+// operatore<<
 template <typename T>
 std::ostream &operator<<(std::ostream &os, MyVector<T> v)
 {
@@ -214,4 +209,4 @@ std::ostream &operator<<(std::ostream &os, MyVector<T> v)
 	output = output.substr(0, output.length() - 2) + ']';
 	return os << output;
 }
-#endif 
+#endif
