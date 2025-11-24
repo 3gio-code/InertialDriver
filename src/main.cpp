@@ -1,5 +1,5 @@
 #include <iostream>
-#include "InertialDriver.h"
+#include "../include/InertialDriver.h"
 
 // Funzione helper per creare una misura fittizia
 Measure create_dummy_measure(double seed)
