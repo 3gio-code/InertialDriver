@@ -1,109 +1,109 @@
+//MyVector NON modificato dalle lezioni precedenti
 #ifndef MyVector_H
 #define MyVector_H
 
-#include <ostream>
+#include <iostream>
 
 template <typename T>
 class MyVector
 {
 
-private:
-    // Var privata che contiene la size totale di celle di memoria inizializzate del MyVector
-    int buffer_size;
-    // Var privata che contiene la size utilizzata del MyVector
-    int sz;
-    // Var privata che punta al primo degli elementi del MyVector (in memoria)
-    T *elem;
-    // Funzione che controlla se l'indice sta nel range di lunghezza del MyVector, termina correttamente se è così, lancia IndexOutOfBoundException altrimenti
-    void index_check(int i);
-    // Funzione che controlla se il buffer è pieno, se si chiama resize
-    void check_buffer();
-    // Funzione che ingrandisce il buffer
-    void resize();
-
-    // COSTANTI:
-    static constexpr int kDefaultbufferSize = 10;
-    static constexpr int kDefaultResizeFactor = 2;
-    static constexpr int kDefaultSize = 0;
-
+    //dichiarazioni PUBBLIC 
 public:
     // CLASSI ECCEZIONI:
 
-    // Classe eccezione
-    class NegativeSizeException
-    {
-    };
-    class IndexOutOfBoundException
-    {
-    };
+    // Eccezione per termine negativo
+    class NegativeSizeException {};
+    // Eccezione per indice fuori dai bound
+    class IndexOutOfBoundException {};
 
     // DISTRUTTORE:
     ~MyVector();
 
     // COSTRUTTORI:
 
-    // Costruttore di default
+    // Costruttore default
     MyVector();
 
-    // Costruttore che accetta un int e lo assegna alla size
+    // Costruttore che accetta un int 
     explicit MyVector(int s);
 
-    // Costruttore con initializer_list
-    // lst è passato per copia
+    // Costruttore che accetta un initializer_list
     MyVector(std::initializer_list<T> lst);
 
     // Costruttore di copia
     MyVector(const MyVector &arg);
 
-    // Costruttore di MOVE (assegna ed invalida)
+    // Costruttore che assegna e invalida
     MyVector(MyVector &&arg);
 
-    // OPERATORI
+    // OPERATORI:
 
-    // Overloading operatore COPIA (permette l'assegnamento della copia)
-    MyVector<T> &operator=(const MyVector<T> &v);
-
-    // Overloading operatore MOVE (assegna ed invalida)
-    MyVector<T> &operator=(MyVector<T> &&);
-
-    // Overloading operatore[]
+    // Operator[]
     T &operator[](int n);
 
-    // Overlaoding operatore[] const (SOLO LETTURA perchè returna COPIA non reference)
-    // Posso fare overloading di una funzione in base alla sua CONSTNESS
+    // Overlaoding operator[] const 
+    // solamente lettura perchè returna una copia e non reference
     T operator[](int n) const;
 
-    // SETTERS/GETTERS:
+    // Operator =
+    MyVector<T> &operator=(const MyVector<T> &v);
 
-    // Funzione che returna la size del MyVector
+    // Overloading operator = 
+    MyVector<T> &operator=(MyVector<T> &&);
+
+    // GETTERS/SETTERS:
+
+    // Funzione che returna size 
     int size() const;
 
-    // Funzione che returna la buffer_size del MyVector
+    // Funzione che returna buffer_size 
     int get_buffer_size() const;
 
-    // Funzione che setta un elemento del MyVector
-    void set(T d, int index);
-
-    // Funzione che returna un elemento del MyVector
+    // Funzione che getta un elemento del MyVector
     T get(int index);
 
-    // FUNCTIONS:
+    // Funzione che setta un elemento del MyVector
+    void set(T x, int index);
 
-    // Funzione che rimuove l'ultimo elemento e lo returna (ACCESSO SOLO IN LETTURA)
+    // FUNZIONI:
+
+    // Funzione che rimuove l'ultimo elemento 
     T pop_back();
 
     // Funzione che aggiunge un elemento alla fine
     void push_back(T el);
 
-    // Funzione che returna una reference all'elemento in posizione index, lancia eccezioni se indice non valido
+    // Funzione che returna una all'indice passato
     T &at(int index);
 
     // Funzione che fa si che buffer_size sia almeno grande quanto n
     void reserve(int n);
+
+    //dichiarazioni PRIVATE
+    private:
+    // Variabile che contiene la dimensione totale disponibile in MyVector
+    int buffer_size;
+    // Variabile che contiene la dimensioine effettiva di MyVector
+    int sz;
+    // Variabile "puntatore" che punta al primo degli elementi del MyVector 
+    T *elem;
+    // Funzione helper che fa un check per gli indici
+    void index_check(int i);
+    // Funzione helper che guarda la dimensione
+    void check_buffer();
+    // Funzione resize classica
+    void resize();
+
+    // COSTANTI di valore arbitrario:
+    static constexpr int defaultbufferSize = 10;
+    static constexpr int defaultResizeFactor = 2;
+    static constexpr int defaultSize = 0;
+
 };
 
-// OVERLOADING OPERATORI
-// Overloading operatore<< (stream)
+// operatore<< 
+//dichiarato fuori dal main
 template <typename T>
 std::ostream &operator<<(std::ostream &os, MyVector<T> a);
 
